@@ -2,10 +2,12 @@
 
 const Button = ({text, onClick}) => {
   const ButtonStyle = {
-    backgroundColor: 'red',
-    border: '1px solid black',
+    backgroundColor: 'lightgrey',
+    borderRadius: '5px',
+    border: 'none',
     color: 'white',
-    padding: '1em'
+    padding: '1em',
+    outline: 'none'
   }
 
 

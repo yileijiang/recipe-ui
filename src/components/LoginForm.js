@@ -1,25 +1,30 @@
 import React, { useState } from 'react'
 import { gql, useMutation }  from '@apollo/client'
-import { useCookies } from 'react-cookie'
+import { useHistory } from 'react-router'
 import Button from './Button'
+import UserWrapper from '../UserWrapper'
 
-const LoginForm = () => {
+const LoginForm = ({setCookie}) => {
   const [ newUsername, setNewUsername ] = useState('')
   const [ newPassword, setNewPassword ] = useState('')
-  const [ cookies, setCookie ] = useCookies(['user'])
+  let history = useHistory()
 
   const query = gql`
-    mutation {
-      userLogin(userInputLogin: { username: "${newUsername}", password: "${newPassword}" }) {
+    mutation sendUserData($user: UserInputLogin!) {
+      userLogin(userInputLogin: $user) {
         value
+        userId
       }
     }
   `
+
   const [loginUser, { data }] = useMutation(query, {
+    variables: { "user": { "username": `${newUsername}`, "password": `${newPassword}`}},
     fetchPolicy: "no-cache",
     onCompleted: (data) => {
-      console.log(data)
       setCookie('token', data.userLogin.value, {path: '/'})
+      UserWrapper.setUserId(data.userLogin.userId)
+      history.push(`/profile`)
     }
   })
 
@@ -35,7 +40,6 @@ const LoginForm = () => {
     loginUser() 
   }
 
-
   return (
     <div>
       <form onSubmit={handleSubmit}>
@@ -43,7 +47,7 @@ const LoginForm = () => {
         <input value={newUsername} onChange={handleUsernameChange} /> <br/>
         password
         <input value={newPassword} onChange={handlePasswordChange} />
-        <Button text="Signup" />
+        <Button text="Login" />
       </form>
     </div>
   )

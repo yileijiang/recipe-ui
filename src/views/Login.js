@@ -1,8 +1,8 @@
 import LoginForm from '../components/LoginForm'
 
-const Login = () => {
-  return(
-   <LoginForm />
+const Login = ({setCookie}) => {
+  return (
+   <LoginForm setCookie={setCookie}/>
   )
 }
 

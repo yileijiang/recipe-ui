@@ -1,0 +1,17 @@
+#ButtonExpand:hover {
+  box-shadow: 1px 3px 5px rgba(0,0,0,0.3);
+  color: white;
+  transform: translateY(-2px);
+}
+
+
+#ButtonExpand {
+  height: 2rem;
+  width: 2rem;
+  border-style: none;
+  border-radius: 50%;
+  background-color: #FF9505;
+  color: white;
+  box-shadow: 1px 1px 5px rgba(0,0,0,0.2);
+  outline: none;
+}

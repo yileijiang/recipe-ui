@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { CookiesProvider } from "react-cookie"
-import './index.css';
+import './index.css'
 import App from './App';
 import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client'
 
@@ -21,3 +21,4 @@ ReactDOM.render(
   document.getElementById('root')
 )
 
+export default client
