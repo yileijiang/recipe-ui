@@ -1,41 +1,62 @@
 import { gql, useQuery } from '@apollo/client'
-import { useParams } from 'react-router'
+import React, { useState } from 'react'
+import { useParams, useLocation } from 'react-router'
 import RecipeDetails from '../components/RecipeDetails'
+import RecipeForm from '../components/RecipeForm'
 
 
+
+const query = gql`
+query getRecipe($id: ID!) {
+  recipe(id: $id) {
+    id
+    title
+    description
+    instruction
+    ingredients {
+      id
+      name
+      quantity
+    }
+  }
+}
+`
 
 
 const Recipe = () => {
-  let { id } = useParams()
+  const [recipe, setRecipe] = useState('')
 
-  const query = gql`
-  query {
-    recipe(id: "${id}") {
-      title
-      description
-      instruction
-      ingredients {
-        name
-        quantity
-      }
-    }
-  }
-  `
+  let { id } = useParams()
+  let location = useLocation()
+  const url = location.pathname.toString()
+
+  const renderForm = (location.pathname.includes('edit')) ? true : false
 
   const { loading, error, data } = useQuery(query, {
-    fetchPolicy: "no-cache"
+    fetchPolicy: "no-cache",
+    variables: {"id": id},
+    onCompleted: (data) => {
+      setRecipe(data.recipe)
+    }
   })
 
   if (loading) return <p>Loading...</p>
   if (error) return <p>Error :(</p>
-
-  const recipe = data.recipe
   
-  return(
+  
+ 
+  return (
     <div>
-      <RecipeDetails recipe={recipe}/>
+      {(renderForm) ? 
+      <RecipeForm recipe={recipe? recipe: data.recipe} setRecipe={setRecipe}/> 
+      : <RecipeDetails recipe={recipe? recipe : data.recipe} />
+      } 
+
     </div>
   )
+
+
+  
 }
 
 export default Recipe

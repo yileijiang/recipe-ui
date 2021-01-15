@@ -2,8 +2,7 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 
 
-const LinkButton = ({link, id, text}) => {
-  const fullLink = `${link}${id}`
+const LinkButton = ({link, text}) => {
 
   const LinkButtonStyle = {
     padding: '0.5rem 7rem',
@@ -17,7 +16,7 @@ const LinkButton = ({link, id, text}) => {
 
   return (
     <div>
-      <Link style={LinkButtonStyle} to={fullLink}> {text}</Link>
+      <Link style={LinkButtonStyle} to={link}> {text}</Link>
     </div>
   )
 

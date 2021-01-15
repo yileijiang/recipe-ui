@@ -73,7 +73,8 @@ const RecipeCard = ({ recipe, recipes, setRecipes }) => {
           </div>
           <div style={DetailsStyle}>
             {displayDetails && <DeleteRecipeButton recipe={recipe} recipes={recipes} setRecipes={setRecipes} />}
-            {displayDetails && <LinkButton  text='Edit' id={''} link='/newRecipe' />}
+            {displayDetails && <LinkButton  text='Edit' link= {`/recipe/${recipe.id}/edit`} />}
+            {displayDetails && <LinkButton  text='View' link= {`/recipe/${recipe.id}`} />}
           </div>
         </div>
       </div>

@@ -32,10 +32,13 @@ const App = () => {
           <Route path='/recipes'>
             <Recipes />
           </Route>
-          <Route path='/recipe/:id' children={<Recipe />}>
+          <Route path='/recipe/:id/edit' children={<Recipe />}>
             <Recipe />
           </Route>
-          <Route path='/newRecipe/'>
+          <Route path='/recipe/:id/' children={<Recipe />}>
+            <Recipe />
+          </Route>
+          <Route path='/newRecipe' >
             <NewRecipe />
           </Route>
           <Route path='/signup'>

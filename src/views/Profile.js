@@ -24,7 +24,6 @@ const Profile = () => {
     fetchPolicy: "no-cache",
     onCompleted: (data) => { 
       setRecipesUser(data.recipesUser)
-      console.log(data)
     }
   })
 
