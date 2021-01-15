@@ -1,52 +1,45 @@
 import { gql, useQuery } from '@apollo/client'
 import RecipeCard from '../components/RecipeCard'
+import React, { useState } from 'react'
 
-import UserWrapper from '../UserWrapper'
-
-const Profile = () => {
-
-  const query = gql`
-    query {
-      recipesUser {
-        title
-        description
-        instruction
-        id
-        ingredients {
-          name
-          quantity
-        }
+const query = gql`
+  query {
+    recipesUser {
+      title
+      description
+      instruction
+      id
+      ingredients {
+        name
+        quantity
       }
     }
-    `
+  }
+`
+
+const Profile = () => {
+  const [recipesUser, setRecipesUser] = useState([])
 
   const { loading, error, data } = useQuery(query, {
-    fetchPolicy: "no-cache"
+    fetchPolicy: "no-cache",
+    onCompleted: (data) => { 
+      setRecipesUser(data.recipesUser)
+      console.log(data)
+    }
   })
-    
-  
+
+      
   if (loading) return <p>Loading...</p>
   if (error) return <p>Error :(</p>
 
-
-  //Display USERNAME, EDIT PROFILE BUTTON, PICTURE USER, 
-  // DISPLAY MENU: MY RECIPES; FAVORITE RECIPES
-
-  return(
+  return (
     <>
       <p> WELCOME </p>
-
       <h1>My Recipes</h1>
-      {data.recipesUser.map(r => 
-        <RecipeCard key={r.id} recipe={r} />
+      {recipesUser.map(r => 
+        <RecipeCard key={r.id} recipe={r} recipes={recipesUser} setRecipes={setRecipesUser} />
       )}
-
       <h1>My Favorite Recipes</h1>
-    
-      
-     
-      
-
     
     </>
   )

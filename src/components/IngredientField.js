@@ -3,7 +3,7 @@ import Button from './Button'
 
 
 const IngredientField = ({ ingredient, ingredients, setIngredients }) => {
-  const [ newName, setNewName ] = useState(`${ingredient.name}`)
+  const [ newName, setNewName ] = useState('')
   const [ newQuantity, setNewQuantity ] = useState('')
 
   const handleNameChange = (event) => {

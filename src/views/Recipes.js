@@ -30,18 +30,16 @@ const Recipes = () => {
   if (loading) return <p>Loading...</p>
   if (error) return <p>Error :(</p>
 
-  if (data) {
-    return (
-      <div>
-        <h2>Recipes</h2>
-         {recipes.map(recipe => 
-          <RecipeCard key={recipe.id} recipe={recipe} recipes={recipes} setRecipes={setRecipes} />
-          )}
-      </div>
-    )
-  }
 
-
+  return (
+    <div>
+      <h2>Recipes</h2>
+       {recipes.map(recipe => 
+        <RecipeCard key={recipe.id} recipe={recipe} recipes={recipes} setRecipes={setRecipes} />
+        )}
+    </div>
+  )
+  
 }
 
 export default Recipes

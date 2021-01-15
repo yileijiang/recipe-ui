@@ -1,61 +1,10 @@
 import React, { useState } from 'react'
-import { gql, useMutation } from '@apollo/client'
-import LinkButton from './LinkButton'
 import ButtonExpandCollapse from './ButtonExpandCollapse'
-import Button from './Button'
-
-
-const Details = ({recipe, setRecipes, recipes}) => {
-
-  // console.log(recipes)
-
-  const query = gql`
-  mutation recipeDelete($id: ID!) {
-    recipeDelete(id: $id) {
-      title
-      description
-      instruction
-    }
-  }  
-`
-  
-  const [deleteRecipe, { data }] = useMutation(query, {
-    fetchPolicy: "no-cache",
-    variables: { "id": `${recipe.id}`},
-    onCompleted: (data) => { 
-      console.log('success')
-    }
-  })
-
-
-  const handleDeleteRecipe = () => {
-    deleteRecipe()
-    const newRecipes = recipes.filter(r => r.id !== recipe.id)
-    setRecipes(newRecipes)
-  }
-  
-  const DetailsButtonStyle = {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'space-around',
-  }
-
-  return (
-    <>
-      <div style={DetailsButtonStyle} >
-        {/* <LinkButton link='/recipe/' id={recipe.id} text='See Recipe'></LinkButton> */}
-        <Button text='Delete' onClick={ handleDeleteRecipe } />
-        <Button text='Edit' />
-      </div>
-    </>
-  )
-}
-
+import DeleteRecipeButton from './DeleteRecipeButton'
+import LinkButton from './LinkButton'
 
 
 const RecipeCard = ({ recipe, recipes, setRecipes }) => {
-
-  console.log(recipes)
 
   const imgURL='https://images.unsplash.com/photo-1512621776951-a57141f2eefd?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1050&q=80'
   const [ displayDetails, setDisplayDetails ] = useState(false)
@@ -123,7 +72,8 @@ const RecipeCard = ({ recipe, recipes, setRecipes }) => {
             <ButtonExpandCollapse onClick={toggleDetails} display={displayDetails}/> 
           </div>
           <div style={DetailsStyle}>
-            {displayDetails && <Details recipe={recipe} recipes={recipes} setRecipes={setRecipes} />}
+            {displayDetails && <DeleteRecipeButton recipe={recipe} recipes={recipes} setRecipes={setRecipes} />}
+            {displayDetails && <LinkButton  text='Edit' id={''} link='/newRecipe' />}
           </div>
         </div>
       </div>

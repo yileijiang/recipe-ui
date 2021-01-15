@@ -35,7 +35,7 @@ const App = () => {
           <Route path='/recipe/:id' children={<Recipe />}>
             <Recipe />
           </Route>
-          <Route path='/newRecipe'>
+          <Route path='/newRecipe/'>
             <NewRecipe />
           </Route>
           <Route path='/signup'>

@@ -2,27 +2,12 @@ import React, { useState } from 'react'
 import { gql, useMutation } from '@apollo/client'
 import Button from './Button'
 import IngredientField from './IngredientField'
+import stringifyObject from 'stringify-object'
 import { useHistory } from 'react-router'
 
 
-const query = gql`
-mutation recipeAdd($recipe: RecipeInput!) {
-  recipeAdd(recipeInput: $recipe) {
-    id
-    title
-    description
-    instruction
-    ingredients {
-      name
-      quantity
-    }
-  }
-}
-`
 
-
-
-const RecipeForm = ({recipeAction}) => {
+const RecipeForm = () => {
   const [ newTitle, setNewTitle ] = useState('')
   const [ newDescription, setNewDescription ] = useState('')
   const [ newInstruction, setNewInstruction ] = useState('')
@@ -30,6 +15,27 @@ const RecipeForm = ({recipeAction}) => {
   const [ counter, setCounter ] = useState(2)
   let history = useHistory()
 
+  const query = gql`
+    mutation {
+      recipeAdd(
+        recipeInput: {
+          title: "${newTitle}"
+          description: "${newDescription}"
+          instruction: "${newInstruction}"
+          ingredients: ${stringifyObject(ingredients, { singleQuotes: false })}
+        }
+      ) {
+        id
+        title
+        description
+        instruction
+        ingredients {
+          name
+          quantity
+        }
+      }
+    }
+  `
 
 
   const [addRecipe, { data }] = useMutation(query, {
@@ -38,6 +44,7 @@ const RecipeForm = ({recipeAction}) => {
       history.push(`/recipe/${data.recipeAdd.id}`)
     }
   })
+
   
   const handleTitleChange = (event) => {
     setNewTitle(event.target.value)
@@ -55,7 +62,8 @@ const RecipeForm = ({recipeAction}) => {
     event.preventDefault()
     let copyIngredients = ingredients.map(i => i)
     copyIngredients.forEach(i => delete i.id)
-    addRecipe({variables: {"recipe": {"title": `${newTitle}`, "description": `${newDescription}`, "instruction": `${newInstruction}`, "ingredients": copyIngredients}}})
+    await setIngredients(copyIngredients)
+    addRecipe()
   }
 
   const addNewField = (event) => {
@@ -69,7 +77,7 @@ const RecipeForm = ({recipeAction}) => {
   const ingredientFields = ingredients.map( (ingredient) => {
     return <IngredientField key={ingredient.id} ingredient={ingredient} ingredients={ingredients} setIngredients={setIngredients}/>
   })
-
+  
   return (
     <div>
        <form onSubmit={handleSubmit} >
