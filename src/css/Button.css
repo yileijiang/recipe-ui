@@ -1,0 +1,15 @@
+#Button {
+  color: #FF9505;
+  padding: 0.5rem 2rem;
+  background-color: white;
+  border: 2px solid #FF9505;
+  border-radius: 20px;
+  font-weight: bold;
+  outline: none;
+
+}
+
+#Button:hover {
+  background-color: #FF9505;
+  color: white;
+}

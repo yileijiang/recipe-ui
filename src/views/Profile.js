@@ -1,6 +1,7 @@
 import { gql, useQuery } from '@apollo/client'
-import RecipeCard from '../components/RecipeCard'
 import React, { useState } from 'react'
+import RecipeCard from '../components/RecipeCard'
+import Button from '../components/Button'
 
 const query = gql`
   query {
@@ -9,21 +10,26 @@ const query = gql`
       description
       instruction
       id
-      ingredients {
-        name
-        quantity
-      }
+    }
+    recipesFavorites {
+      title
+      description
+      instruction
+      id
     }
   }
 `
 
 const Profile = () => {
   const [recipesUser, setRecipesUser] = useState([])
+  const [recipesFavorite, setRecipesFavorite] = useSate([])
 
   const { loading, error, data } = useQuery(query, {
     fetchPolicy: "no-cache",
     onCompleted: (data) => { 
+      console.log(data)
       setRecipesUser(data.recipesUser)
+
     }
   })
 
@@ -33,7 +39,9 @@ const Profile = () => {
 
   return (
     <>
-      <p> WELCOME </p>
+      <h1> Lei </h1>
+
+      <Button text='My Recipes'/>
       <h1>My Recipes</h1>
       {recipesUser.map(r => 
         <RecipeCard key={r.id} recipe={r} recipes={recipesUser} setRecipes={setRecipesUser} />

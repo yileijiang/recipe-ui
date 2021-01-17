@@ -4,7 +4,7 @@ import { v4 as uuidv4 } from 'uuid'
 import Button from './Button'
 import IngredientField from './IngredientField'
 import { useHistory } from 'react-router'
-import UserInformation from './UserInformation'
+
 
 
 const queryAddRecipe = gql`

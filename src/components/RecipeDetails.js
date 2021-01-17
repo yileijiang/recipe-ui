@@ -1,4 +1,6 @@
 
+import ButtonFavorite from './ButtonFavorite'
+
 
 const RecipeDetails = ({recipe}) => {
   const imgURL='https://images.unsplash.com/photo-1512621776951-a57141f2eefd?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1050&q=80'
@@ -11,6 +13,7 @@ const RecipeDetails = ({recipe}) => {
   return(
     <div>
       <h1>{recipe.title}</h1>
+      <ButtonFavorite recipeId={recipe.id}/>
       <hr/>
       <img src={imgURL} width='500px' height='300pyx'/>
       <p>{recipe.description}</p>
