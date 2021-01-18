@@ -17,7 +17,7 @@ const ButtonFavorite = ({recipeId}) => {
     fetchPolicy: "no-cache",
     variables: { "id": `${recipeId}`},
     onCompleted: (data) => { 
-      console.log(data)
+      console.log('successfully added to favorites')
     }
   })
 

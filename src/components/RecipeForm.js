@@ -1,15 +1,16 @@
-import React, { useState } from 'react'
-import { gql, useMutation } from '@apollo/client'
+import React, { useEffect, useState } from 'react'
+import { gql, useMutation, useQuery } from '@apollo/client'
 import { v4 as uuidv4 } from 'uuid'
+import { useHistory } from 'react-router'
+import TextField from '@material-ui/core/TextField'
+import Autocomplete from '@material-ui/lab/Autocomplete'
 import Button from './Button'
 import IngredientField from './IngredientField'
-import { useHistory } from 'react-router'
-
 
 
 const queryAddRecipe = gql`
-  mutation recipeAdd($recipe: RecipeInput!) {
-    recipeAdd(recipeInput: $recipe) {
+  mutation recipeCreate($recipe: RecipeInput!) {
+    recipeCreate(recipeInput: $recipe) {
       id
       title
       description
@@ -17,6 +18,9 @@ const queryAddRecipe = gql`
       ingredients {
         name
         quantity
+      }
+      tags {
+        name
       }
     }
   }
@@ -37,7 +41,11 @@ const queryUpdateRecipe = gql `
   }
 `
 
-
+const queryTags = gql `
+  query {
+    tags { name, id }
+  }
+`
 
 const RecipeForm = ({recipe, setRecipe}) => {
 
@@ -47,7 +55,8 @@ const RecipeForm = ({recipe, setRecipe}) => {
       title: '',
       description: '',
       instruction: '',
-      ingredients: [{name: '', quantity: '', idForm: `${uuidv4()}`}]
+      ingredients: [{name: '', quantity: '', idForm: `${uuidv4()}`}],
+      tags: []
     }
 
 
@@ -61,13 +70,14 @@ const RecipeForm = ({recipe, setRecipe}) => {
   const [ newDescription, setNewDescription ] = useState(recipeState.description)
   const [ newInstruction, setNewInstruction ] = useState(recipeState.instruction)
   const [ ingredients, setIngredients ] = useState(recipeState.ingredients)
+  const [ tags, setTags ] = useState(recipeState.tags)
   let history = useHistory()
     
 
-  const [addRecipe, { dataAdd }] = useMutation(queryAddRecipe, {
+  const [createRecipe, { dataAdd }] = useMutation(queryAddRecipe, {
     fetchPolicy: "no-cache",
     onCompleted: (data) => {
-      history.push(`/recipe/${data.recipeAdd.id}`)
+      history.push(`/recipe/${data.recipeCreate.id}`)
     }
   })
 
@@ -78,6 +88,17 @@ const RecipeForm = ({recipe, setRecipe}) => {
       history.push(`/recipe/${data.recipeUpdate.id}`)
     }
   })
+
+  useEffect(() => {
+
+  }, [])
+
+  const { loading, error, data } = useQuery(queryTags, {
+    fetchPolicy: "no-cache",
+    onCompleted: (data) => { 
+    }
+  })
+
   
   const handleTitleChange = (event) => {
     setNewTitle(event.target.value)
@@ -95,11 +116,13 @@ const RecipeForm = ({recipe, setRecipe}) => {
     event.preventDefault()
     let copyIngredients = ingredients.map(i => i)
     copyIngredients.forEach(i => delete i.idForm)
+    let copyTags = tags.map(t => t)
+    copyTags.forEach(t => delete t.__typename)
 
     if (editRecipe) {
       updateRecipe({variables: {"recipe": {"id": `${recipe.id}`, "title": `${newTitle}`, "description": `${newDescription}`, "instruction": `${newInstruction}`, "ingredients": copyIngredients}}})
     } else {
-      addRecipe({variables: {"recipe": {"title": `${newTitle}`, "description": `${newDescription}`, "instruction": `${newInstruction}`, "ingredients": copyIngredients}}})
+      createRecipe({variables: {"recipe": {"title": `${newTitle}`, "description": `${newDescription}`, "instruction": `${newInstruction}`, "ingredients": copyIngredients, "tags": tags }}})
     }
     
   }
@@ -114,6 +137,14 @@ const RecipeForm = ({recipe, setRecipe}) => {
     return <IngredientField key={ingredient.idForm} ingredient={ingredient} ingredients={ingredients} setIngredients={setIngredients}/>
   })
 
+
+  if (loading) {
+    return (
+      <> </>
+    )
+  }
+
+
   return (
     <div>
        <form onSubmit={handleSubmit} >
@@ -124,13 +155,24 @@ const RecipeForm = ({recipe, setRecipe}) => {
         instruction
         <input value={newInstruction} onChange={handleInstructionChange} />
 
-        {ingredientFields}
 
+        {ingredientFields}
         <Button text='Add More Ingredients' onClick={addNewField} />
+
+        select up to 5 tags
+        <Autocomplete multiple
+          onChange={(event, value) => setTags(value)}
+          options={data.tags}
+          getOptionLabel={(option) => option.id}
+          style={{ width: 300 }}
+          renderInput={(params) => <TextField {...params} label="Combo box" variant="outlined" />} />
+
+
         {(editRecipe)? 
           <Button text='Edit Recipe'/>
         : <Button text='Add New Recipe'/>
         }
+
       </form>
     </div>
   )

@@ -10,9 +10,12 @@ const RecipeDetails = ({recipe}) => {
   })
   
 
+  console.log(recipe)
+
   return(
     <div>
       <h1>{recipe.title}</h1>
+      <p>tags: </p>
       <ButtonFavorite recipeId={recipe.id}/>
       <hr/>
       <img src={imgURL} width='500px' height='300pyx'/>

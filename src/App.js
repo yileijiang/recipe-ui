@@ -42,7 +42,7 @@ const App = () => {
             <NewRecipe />
           </Route>
           <Route path='/signup'>
-            <Signup />
+            <Signup setCookie={setCookie} />
           </Route>
           <Route path='/login'>
             <Login setCookie={setCookie}/>

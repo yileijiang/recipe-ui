@@ -18,6 +18,10 @@ query getRecipe($id: ID!) {
       name
       quantity
     }
+    tags {
+      name
+      id
+    }
   }
 }
 `
@@ -43,7 +47,7 @@ const Recipe = () => {
   if (loading) return <p>Loading...</p>
   if (error) return <p>Error :(</p>
   
-  
+  console.log(recipe)
  
   return (
     <div>

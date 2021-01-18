@@ -6,17 +6,19 @@ const SignupInformation = ({user}) => {
 
   console.log(user)
 
+
   if(!user) {
     return (
-      <>
-      </>
+      <></>
     )
   } else {
     return(
       <div style={SignupInformationStyle}>
-        Sucessfully signed up as {user.username}.
+        <p> Welcome {user.name}! </p>
+        You have sucessfully signed up. Your username is {user.username}.
         <br/>
         Get started now:
+         
       </div>
     )
   }

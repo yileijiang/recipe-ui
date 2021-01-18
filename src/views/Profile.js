@@ -20,15 +20,23 @@ const query = gql`
   }
 `
 
+const GridStyle = {
+  display: 'grid',
+  gridTemplateRows: '1fr 1fr 1fr', 
+  gridTemplateColumns: '1fr 1fr 1fr'
+}
+
+
 const Profile = () => {
   const [recipesUser, setRecipesUser] = useState([])
-  const [recipesFavorite, setRecipesFavorite] = useSate([])
+  const [recipesFavorites, setRecipesFavorites] = useState([])
 
   const { loading, error, data } = useQuery(query, {
     fetchPolicy: "no-cache",
     onCompleted: (data) => { 
       console.log(data)
       setRecipesUser(data.recipesUser)
+      setRecipesFavorites(data.recipesFavorites)
 
     }
   })
@@ -37,16 +45,23 @@ const Profile = () => {
   if (loading) return <p>Loading...</p>
   if (error) return <p>Error :(</p>
 
+  const recipesUserDisplay =  recipesUser.map(r => <div><RecipeCard key={r.id} recipe={r} recipes={recipesUser} setRecipes={setRecipesUser} /></div>)
+
+  const recipesFavoritesDisplay = recipesFavorites.map(r => <RecipeCard key={r.id} recipe={r} recipes={recipesUser} setRecipes={setRecipesUser} />)
+
   return (
     <>
       <h1> Lei </h1>
 
       <Button text='My Recipes'/>
+
       <h1>My Recipes</h1>
-      {recipesUser.map(r => 
-        <RecipeCard key={r.id} recipe={r} recipes={recipesUser} setRecipes={setRecipesUser} />
-      )}
+      <div style={GridStyle}>
+        {recipesUserDisplay}
+      </div>
+     
       <h1>My Favorite Recipes</h1>
+      {recipesFavoritesDisplay}
     
     </>
   )

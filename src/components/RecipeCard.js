@@ -14,8 +14,8 @@ const RecipeCard = ({ recipe, recipes, setRecipes }) => {
     backgroundColor: 'ECECEC',
     borderRadius: '3px',
     boxShadow: '1px 0px 10px 1px rgba(0,0,0,0.3)',
-    height: '15rem',
-    width: '20rem',
+    height: '20rem',
+    width: '25rem',
     overflow: 'auto'
   }
 

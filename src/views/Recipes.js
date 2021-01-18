@@ -23,6 +23,7 @@ const Recipes = () => {
   const { loading, error, data } = useQuery(query, {
     fetchPolicy: "no-cache",
     onCompleted: (data) => { 
+      console.log(data)
       setRecipes(data.recipes)
     }
   })
