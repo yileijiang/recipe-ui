@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faUser, faLock } from '@fortawesome/free-solid-svg-icons'
 import { useHistory } from 'react-router'
 import Button from './Button'
+import Alert from './Alert'
 import UserWrapper from '../UserWrapper'
 import { NavLink } from 'react-router-dom'
 import {
@@ -36,17 +37,8 @@ const query = gql`
 const LoginForm = ({setCookie}) => {
   const [ newUsername, setNewUsername ] = useState('')
   const [ newPassword, setNewPassword ] = useState('')
+  const [messages, setMessages] = useState('')
   let history = useHistory()
-
-  const [loginUser, { data }] = useMutation(query, {
-    variables: { "user": { "username": `${newUsername}`, "password": `${newPassword}`}},
-    fetchPolicy: "no-cache",
-    onCompleted: (data) => {
-      setCookie('token', data.userLogin.value, {path: '/'})
-      UserWrapper.setUserId(data.userLogin.userId)
-      history.push(`/profile`)
-    }
-  })
 
   const handleUsernameChange = (event) => {
     setNewUsername(event.target.value)
@@ -55,9 +47,38 @@ const LoginForm = ({setCookie}) => {
     setNewPassword(event.target.value)
   }
 
+  const [loginUser, { data }] = useMutation(query, {
+    variables: { "user": { "username": `${newUsername}`, "password": `${newPassword}`}},
+    fetchPolicy: "no-cache",
+    errorPolicy: "none",
+    onCompleted: (data) => {
+      setCookie('token', data.userLogin.value, {path: '/'})
+      UserWrapper.setUserId(data.userLogin.userId)
+      history.push(`/profile`)
+    },
+    onError: (error) => {
+      setMessages(["Log in not sucessful. Username or passwrong is wrong"])
+    }
+  })
+
+  
   const handleSubmit = (event) => {
     event.preventDefault()
-    loginUser() 
+    let messages = []
+
+    if (!newUsername) {
+      messages.push('Please enter your username')
+    } 
+
+    if (!newPassword) {
+      messages.push('Please enter your password')
+    }
+
+    setMessages(messages)
+ 
+    if (messages.length === 0) {
+      loginUser()  
+    }
   }
 
   return (
@@ -72,12 +93,13 @@ const LoginForm = ({setCookie}) => {
         </div>
         <div style={ InputContainerStyleBottom }>
           <FontAwesomeIcon style={ newPassword? IconStyleYellow : IconStyle } icon={faLock}/>
-          <input style={InputStyle} value={newPassword} placeholder='Password' onChange={handlePasswordChange} />
+          <input style={InputStyle} value={newPassword} type='password' placeholder='Password' onChange={handlePasswordChange} />
         </div>
         <div style={SubmitButton}>
           <Button text="Log In" />
         </div>
       </form>
+      <Alert messages={messages} />
       <div style={InformationBottom}>
         <NavLink style={LoginStyle} to='/signup'>Don't have an Account? Sign up </NavLink>
       </div>

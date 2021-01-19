@@ -47,6 +47,7 @@ const queryTags = gql `
   }
 `
 
+
 const RecipeForm = ({recipe, setRecipe}) => {
 
   let editRecipe = recipe ? true : false
@@ -72,16 +73,28 @@ const RecipeForm = ({recipe, setRecipe}) => {
   const [ ingredients, setIngredients ] = useState(recipeState.ingredients)
   const [ tags, setTags ] = useState(recipeState.tags)
   let history = useHistory()
-    
 
-  const [createRecipe, { dataAdd }] = useMutation(queryAddRecipe, {
+    
+  const handleTitleChange = (event) => {
+    setNewTitle(event.target.value)
+  }
+  const handleDescriptionChange = (event) => {
+    setNewDescription(event.target.value)
+  }
+  const handleInstructionChange = (event) => {
+    setNewInstruction(event.target.value)
+  }
+
+
+  const [createRecipe ] = useMutation(queryAddRecipe, {
     fetchPolicy: "no-cache",
     onCompleted: (data) => {
       history.push(`/recipe/${data.recipeCreate.id}`)
     }
   })
 
-  const [updateRecipe, { dataUpdate }] = useMutation(queryUpdateRecipe, {
+  
+  const [updateRecipe] = useMutation(queryUpdateRecipe, {
     fetchPolicy: "no-cache",
     onCompleted: (data) => {
       setRecipe(data.recipeUpdate)
@@ -89,28 +102,11 @@ const RecipeForm = ({recipe, setRecipe}) => {
     }
   })
 
-  useEffect(() => {
-
-  }, [])
-
-  const { loading, error, data } = useQuery(queryTags, {
-    fetchPolicy: "no-cache",
-    onCompleted: (data) => { 
-    }
+  
+  const { data } = useQuery(queryTags, {
+    fetchPolicy: "no-cache"
   })
 
-  
-  const handleTitleChange = (event) => {
-    setNewTitle(event.target.value)
-  }
-
-  const handleDescriptionChange = (event) => {
-    setNewDescription(event.target.value)
-  }
-
-  const handleInstructionChange = (event) => {
-    setNewInstruction(event.target.value)
-  }
 
   const handleSubmit = async (event) => {
     event.preventDefault()
@@ -122,10 +118,10 @@ const RecipeForm = ({recipe, setRecipe}) => {
     if (editRecipe) {
       updateRecipe({variables: {"recipe": {"id": `${recipe.id}`, "title": `${newTitle}`, "description": `${newDescription}`, "instruction": `${newInstruction}`, "ingredients": copyIngredients}}})
     } else {
-      createRecipe({variables: {"recipe": {"title": `${newTitle}`, "description": `${newDescription}`, "instruction": `${newInstruction}`, "ingredients": copyIngredients, "tags": tags }}})
+      createRecipe({variables: {"recipe": {"title": `${newTitle}`, "description": `${newDescription}`, "instruction": `${newInstruction}`, "ingredients": copyIngredients, "tags": copyTags}}})
     }
-    
   }
+
 
   const addNewField = (event) => {
     event.preventDefault()
@@ -133,16 +129,11 @@ const RecipeForm = ({recipe, setRecipe}) => {
     setIngredients(newIngredients)
   }
 
+
   const ingredientFields = ingredients.map( (ingredient) => {
     return <IngredientField key={ingredient.idForm} ingredient={ingredient} ingredients={ingredients} setIngredients={setIngredients}/>
   })
 
-
-  if (loading) {
-    return (
-      <> </>
-    )
-  }
 
 
   return (
@@ -162,10 +153,10 @@ const RecipeForm = ({recipe, setRecipe}) => {
         select up to 5 tags
         <Autocomplete multiple
           onChange={(event, value) => setTags(value)}
-          options={data.tags}
-          getOptionLabel={(option) => option.id}
+          options={data? data.tags: []}
+          getOptionLabel={(option) => option.name}
           style={{ width: 300 }}
-          renderInput={(params) => <TextField {...params} label="Combo box" variant="outlined" />} />
+          renderInput={(params) => <TextField {...params} label="Tags" variant="outlined" />} />
 
 
         {(editRecipe)? 

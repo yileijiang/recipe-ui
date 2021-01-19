@@ -34,7 +34,6 @@ const Profile = () => {
   const { loading, error, data } = useQuery(query, {
     fetchPolicy: "no-cache",
     onCompleted: (data) => { 
-      console.log(data)
       setRecipesUser(data.recipesUser)
       setRecipesFavorites(data.recipesFavorites)
 

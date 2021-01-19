@@ -4,8 +4,7 @@ const SignupInformation = ({user}) => {
     margin: '2rem 3rem'
   }
 
-  console.log(user)
-
+ 
 
   if(!user) {
     return (
@@ -18,7 +17,7 @@ const SignupInformation = ({user}) => {
         You have sucessfully signed up. Your username is {user.username}.
         <br/>
         Get started now:
-         
+
       </div>
     )
   }

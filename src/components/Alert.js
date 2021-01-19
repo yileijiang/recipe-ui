@@ -1,20 +1,23 @@
-const Alert = ({message}) => {
+const Alert = ({messages}) => {
   const AlertStyle = {
     color: '#A23C2A',
     fontWeight: '300',
     fontFamily: 'Roboto',
     textAlign: 'center',
-    margin: '5rem 2rem'
+    margin: '1rem 3rem'
   }
 
-  if (!message) {
+
+  if (!messages) {
     return (
       <> </>
     )
   } else {
     return (
       <div style={AlertStyle}>
-        {message}
+        {messages.map(m => (
+          <p>{m}</p>
+        ))}
       </div>
     )
   }
